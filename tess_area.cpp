@@ -28,7 +28,7 @@ int main(int argc, char **argv) {
   }
   outputfile = inputfile;
   outputfile.erase(outputfile.find_last_of("."), std::string::npos);
-  outputfile.append("_effective_stress.txt");
+  outputfile.append("_stress.txt");
   std::ifstream infile(inputfile);
   std::ofstream ofs(outputfile);
   // Including the x, y positions, moment M11/12/21/22 of grain
@@ -72,12 +72,7 @@ int main(int argc, char **argv) {
     while (std::getline(infile, line)) {
       if (line != "") {
         std::istringstream istream(line);
-        istream >> ignored >> ignored >> grain_x >> grain_y;
-        for (int i = 1; i < 21; ++i)
-          istream >> ignored;
-        // Ignore exported variables between y position and M11;
-        istream >> M11 >> M12 >> M21 >> M22;
-        std::cout<<M11<<std::endl;
+        istream >> ignored >> grain_x >> grain_y >> M11 >> M12 >> M21 >> M22;
         Grain g;
         g.x = grain_x;
         g.y = grain_y;

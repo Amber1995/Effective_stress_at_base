@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[12]:
+# In[ ]:
 
 
 import pandas as pd
@@ -13,16 +13,19 @@ import shutil
 import subprocess
 import glob
 
-condition = ["dry"]
-volume = ["1"]
+condition = ["dcrR"]
+volume= 2
 a= "02"
 
 #The initial time-step
-ini_dat = "DEM000002.dat"
+ini_dat = "DEM000000.dat"
 
 
 for c in condition:
-    for v in volume:
+     while volume <6:
+        v=str(volume)        
+         #path to the outpufiles and excutable files(current location)
+        output_path = "/home/amber/Documents/2d-lbm-dem-analysis/2d-lbm-dem/Analysis/a"+a+"/code/contactforces/Using_g[i].stress/"
         
         #path to the inputfiles(initial DEM*.dat) 
         input_path_ini = "/home/amber/Documents/2d-lbm-dem-analysis/2d-lbm-dem/Analysis/a02/"+c+"_v"+v+"00dat/"
@@ -38,9 +41,6 @@ for c in condition:
             if doc.startswith(c+"_v"+v):
                 file_3tc = shutil.copyfile(doc,output_path+c+"-v"+v+"_3tc.dat")   
 
-        #path to the outpufiles and excutable files(current location)
-        output_path = "/home/amber/Documents/2d-lbm-dem-analysis/2d-lbm-dem/Analysis/a"+a+"/code/contactforces/Using_g[i].stress/"
-
 
     # Process the initial DEM*.dat and obtain the maximum initial stress component at base of flowfront:smax
 
@@ -49,13 +49,13 @@ for c in condition:
         os.chdir(output_path)
         file_ini = shutil.copyfile(filename,"./"+c+"-v"+v+"_ini.dat")
         # Calculate the effective stress component of the grains at base of flowfront
-        subprocess.call(['./voro-area.sh'])
-        # Remove the inputfile to avoid out-of-order in following calculation
-        os.remove(file_ini)
+        subprocess.call(['./extract_columns.sh'])
+        subprocess.call(['./run.sh'])
         # Obtain the maximum initial stress component at base of flowfront
-        for file_ini_stress in glob.glob('./*stress.txt'):
+        for file_ini_stress in glob.glob("./"+c+"-v"+v+"_ini_stress.txt"):
             data_ini = pd.read_csv(file_ini_stress,sep=',')
             smax = data_ini['S22'].max()
+            print(smax)
 
 # Process the DEM*.dat at 3 tau_c 
 # Obtain normalized length by ~15d versus normalized effective stress s22 by smax
@@ -63,24 +63,18 @@ for c in condition:
         # Calculate the effective stress component of the grains at base of flowfront 
         output = c+"-v"+v+"base.txt"
         f1 = open(output, "w")
- 
-        subprocess.call(['./voro-area.sh'])
-        os.remove(c+"-v"+v+"_3tc.dat")
-        for file_3tc_stress in glob.glob('./*stress.txt'):
+        subprocess.call(['./extract_columns.sh'])
+        subprocess.call(['./run.sh'])
+        for file_3tc_stress in glob.glob("./"+c+"-v"+v+"_3tc_stress.txt"):
             data_3tc = pd.read_csv(file_3tc_stress,sep=',')
             for index, row in data_3tc.iterrows():
                 f1.write("%f %f \n"% (row[1],row[6]/smax))    
         f1.close()
         #Sort those outputfiles by value
         subprocess.call(['./sort.sh'])
+        volume = volume +1
 
         
-
-
-# In[ ]:
-
-
-
 
 
 # In[ ]:
