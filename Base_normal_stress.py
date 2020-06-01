@@ -13,16 +13,16 @@ import shutil
 import subprocess
 import glob
 
-condition = ["dcrR"]
-volume= 2
+condition = ["dry"]
+volume= 1
 a= "02"
 
 #The initial time-step
-ini_dat = "DEM000000.dat"
+ini_dat = "DEM000001.dat"
 
 
 for c in condition:
-     while volume <6:
+     while volume <2:
         v=str(volume)        
          #path to the outpufiles and excutable files(current location)
         output_path = "/home/amber/Documents/2d-lbm-dem-analysis/2d-lbm-dem/Analysis/a"+a+"/code/contactforces/Using_g[i].stress/"
