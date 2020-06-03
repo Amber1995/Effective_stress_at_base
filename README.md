@@ -1,5 +1,4 @@
 # Effective stress at base
-This repository serves to calculate the normalised effective stress component at base of the flowfront. The inputfiles are computed by 2d-lbm-dem at different time steps.
-
-Input the path to the corresponding DEM*.dat in the Base_normal_stress.ipynb or Base_normal_stress.py, and then run
-python Base_normal_stress.py.
+the input files contain the DEM*.dat at the first time step and the time step at 3 tau_c, which are as in input folder;
+the output files is *base.txt in output folder, which represents the normalized stress component s11 at the base of normalized flowfront.
+Input the paths to the input and output in the ipynb and run it in jupyter notebook. 
